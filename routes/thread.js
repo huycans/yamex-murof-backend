@@ -4,11 +4,11 @@ const bodyParser = require("body-parser");
 // const authenticate = require("../authenticate");
 // const cors = require("./cors");
 
-const thread = express.Router();
-thread.use(bodyParser.json());
+const threadRouter = express.Router();
+threadRouter.use(bodyParser.json());
 
 
-thread
+threadRouter
   .route("/")
   .get((req, res, next) => {
     let { sfid, page} = req.query;
@@ -21,18 +21,20 @@ thread
       res.end("Create a new thread")
     }
   );
+  
+threadRouter
+  .route("/latest")
+  .get((req, res, next) => {
+    console.log("Return the newest thread list");
+    res.end("Return the newest thread list")
+  })
 
-thread
+threadRouter
   .route("/:threadId")
   .get((req, res, next) => {
     console.log("Return data for a thread");
     res.end("Return data for a thread")
   })
 
-thread
-  .route("/latest")
-  .get((req, res, next) => {
-    console.log("Return the newest thread list");
-    res.end("Return the newest thread list")
-  })
-module.exports = thread;
+
+module.exports = threadRouter;

@@ -4,17 +4,16 @@ const bodyParser = require("body-parser");
 // const authenticate = require("../authenticate");
 // const cors = require("./cors");
 
-const auth = express.Router();
-auth.use(bodyParser.json());
+const authRouter = express.Router();
+authRouter.use(bodyParser.json());
 
 
-auth
+authRouter
   .route("/")
-  .post(
-    (req, res, next) => {
+  .post((req, res, next) => {
       console.log("Verify token");
       res.end("Verify token");
     }
   )
 
-module.exports = auth;
+module.exports = authRouter;

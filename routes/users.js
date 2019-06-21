@@ -1,20 +1,21 @@
 var express = require("express");
+const bodyParser = require("body-parser");
 
-const user = express.Router();
-user.use(bodyParser.json());
+const userRouter = express.Router();
+userRouter.use(bodyParser.json());
 
 /* GET users listing. */
-user
+userRouter
   .route("/")
-  .post("/", function(req, res, next) {
+  .post( function(req, res, next) {
     console.log("Update user info");
     res.end("Update user info");
 });
 
-user
+userRouter
   .route("/:userId")
-  .get("/", function(req, res, next) {
+  .get( function(req, res, next) {
     console.log("Return user info");
     res.end("Return user info");
 });
-module.exports = router;
+module.exports = userRouter;

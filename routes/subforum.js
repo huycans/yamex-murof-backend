@@ -4,11 +4,11 @@ const bodyParser = require("body-parser");
 // const authenticate = require("../authenticate");
 // const cors = require("./cors");
 
-const subforum = express.Router();
-subforum.use(bodyParser.json());
+const subforumRouter = express.Router();
+subforumRouter.use(bodyParser.json());
 
 
-subforum
+subforumRouter
   .route("/")
   .get((req, res, next) => {
     let {fid} = req.query;
@@ -22,4 +22,4 @@ subforum
     }
   )
 
-module.exports = subforum;
+module.exports = subforumRouter;

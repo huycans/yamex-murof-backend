@@ -4,21 +4,21 @@ const bodyParser = require("body-parser");
 // const authenticate = require("../authenticate");
 // const cors = require("./cors");
 
-const forum = express.Router();
-forum.use(bodyParser.json());
+const forumRouter = express.Router();
+forumRouter.use(bodyParser.json());
 
-forum
+forumRouter
 .route("/")
 .put((req, res, next) => {
   console.log("Create a new forum");
   res.end("Create a new forum");
 });
 
-forum
+forumRouter
 .route("/all")
 .get((req, res, next) => {
   console.log("Returning all forums");
   res.end("Returning all forums");
 });
 
-module.exports = forum;
+module.exports = forumRouter;

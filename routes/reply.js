@@ -4,11 +4,11 @@ const bodyParser = require("body-parser");
 // const authenticate = require("../authenticate");
 // const cors = require("./cors");
 
-const reply = express.Router();
-reply.use(bodyParser.json());
+const replyRouter = express.Router();
+replyRouter.use(bodyParser.json());
 
 
-reply
+replyRouter
   .route("/")
   .get((req, res, next) => {
     let {thrid, page} = req.query;
@@ -28,4 +28,4 @@ reply
     }
   )
 
-module.exports = reply;
+module.exports = replyRouter;
