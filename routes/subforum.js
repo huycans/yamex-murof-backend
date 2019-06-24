@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-// const model = require("../models/");
+const Subforums = require("../models/subforum");
 // const authenticate = require("../authenticate");
 // const cors = require("./cors");
 
@@ -12,13 +12,42 @@ subforumRouter
   .route("/")
   .get((req, res, next) => {
     let {fid} = req.query;
-    console.log("Return a list of subforum");
-    res.end("Return a list of subforum")
+    console.log("Fid:", fid);
+    Subforums.find({
+      forumId: fid
+    })
+    // .populate("latestThread")
+    .then(subforums => {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json(subforums);
+    },
+      err => next(err)
+    )
+    .catch(err => {
+      next(err);
+    })
   })
   .put(
     (req, res, next) => {
-      console.log("Create a new subforum");
-      res.end("Create a new subforum")
+      Subforums.create({
+        name: req.body.name,
+        description: req.body.description,
+				forumId: req.body.forumId,
+        path: String(req.body.name).replace(/ /g,'').toLowerCase(),
+      })
+      .then(subforum => {
+        console.log("Subforum created: ", subforum.name);
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(subforum);
+      },
+      err => {
+        next(err);
+      })
+      .catch(err => {
+        next(err);
+      });
     }
   )
 
