@@ -12,7 +12,6 @@ subforumRouter
   .route("/")
   .get((req, res, next) => {
     let {fid} = req.query;
-    console.log("Fid:", fid);
     Subforums.find({
       forumId: fid
     })
