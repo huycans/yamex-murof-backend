@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const threadSchema = new Schema({
+const userSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -20,7 +20,7 @@ const threadSchema = new Schema({
     type: Date
   },
   favoriteBike: {
-    type: Date
+    type: String
   },
   isActive: {
     type: Boolean
@@ -32,7 +32,7 @@ const threadSchema = new Schema({
   }
 });
 
-let Threads = mongoose.model("Thread", threadSchema);
+let Users = mongoose.model("User", userSchema);
 
-module.exports = Threads;
+module.exports = Users;
 
