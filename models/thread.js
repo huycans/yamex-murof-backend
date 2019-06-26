@@ -13,7 +13,7 @@ const threadSchema = new Schema({
   tag: {
     type: String,
   },
-  subforumId: {
+  subForumId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subforum",
   },
