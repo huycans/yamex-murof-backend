@@ -1,6 +1,7 @@
 var express = require("express");
 const bodyParser = require("body-parser");
 const Users = require("../models/user");
+const cors = require("./cors");
 
 const userRouter = express.Router();
 userRouter.use(bodyParser.json());
@@ -8,7 +9,10 @@ userRouter.use(bodyParser.json());
 /* GET users listing. */
 userRouter
   .route("/:userId")
-  .post( function(req, res, next) {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .post(cors.cors, function(req, res, next) {
     Users.findByIdAndUpdate(req.query.userId, req.body, {new: true})
     .then((user) => {
       res.statusCode = 200;
@@ -24,7 +28,10 @@ userRouter
 
 userRouter
   .route("/:userId")
-  .get( function(req, res, next) {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors, function(req, res, next) {
     Users.findById(req.params.userId)
     .then((user) => {
       res.statusCode = 200;

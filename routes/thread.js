@@ -4,7 +4,7 @@ const Threads = require("../models/thread");
 const Subforums = require("../models/subforum");
 
 // const authenticate = require("../authenticate");
-// const cors = require("./cors");
+const cors = require("./cors");
 
 const threadRouter = express.Router();
 threadRouter.use(bodyParser.json());
@@ -12,7 +12,10 @@ threadRouter.use(bodyParser.json());
 
 threadRouter
   .route("/")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors,(req, res, next) => {
     let { sfid, page } = req.query;
     Threads.find({
       subForumId: sfid
@@ -28,7 +31,7 @@ threadRouter
       next(err);
     })
   })
-  .put(
+  .put(cors.cors,
     (req, res, next) => {
       Subforums.findById(req.body.subForumId)
       .then((subforum) => {
@@ -73,7 +76,10 @@ threadRouter
   
 threadRouter
   .route("/latest")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors,(req, res, next) => {
     let {sfid} = req.query;
     Threads.find({subForumId: sfid})
     .sort({ _id: -1 }).limit(10)
@@ -92,7 +98,10 @@ threadRouter
 
 threadRouter
   .route("/:threadId")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors,(req, res, next) => {
     Threads.findById(req.params.threadId)
     .then((thread) => {
       res.statusCode = 200;

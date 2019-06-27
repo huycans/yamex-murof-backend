@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Subforums = require("../models/subforum");
 // const authenticate = require("../authenticate");
-// const cors = require("./cors");
+const cors = require("./cors");
 
 const subforumRouter = express.Router();
 subforumRouter.use(bodyParser.json());
@@ -10,7 +10,10 @@ subforumRouter.use(bodyParser.json());
 
 subforumRouter
   .route("/")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors,(req, res, next) => {
     let {fid} = req.query;
     Subforums.find({
       forumId: fid
@@ -27,7 +30,7 @@ subforumRouter
       next(err);
     })
   })
-  .put(
+  .put(cors.cors,
     (req, res, next) => {
       Subforums.create({
         name: req.body.name,

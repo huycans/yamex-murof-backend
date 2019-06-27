@@ -1,15 +1,19 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const Forums = require("../models/forum");
+const cors = require("./cors");
+
 // const authenticate = require("../authenticate");
-// const cors = require("./cors");
 
 const forumRouter = express.Router();
 forumRouter.use(bodyParser.json());
 
 forumRouter
 .route("/")
-.put((req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => {
+  res.sendStatus(200);
+})
+.put(cors.cors, (req, res, next) => {
   // TODO: implement admin auth check here
   Forums.create({
     name: req.body.name,
@@ -34,7 +38,10 @@ forumRouter
 
 forumRouter
 .route("/all")
-.get((req, res, next) => {
+.options(cors.cors, (req, res) => {
+  res.sendStatus(200);
+})
+.get(cors.corsWithOptions, (req, res, next) => {
   Forums.find()
   .then(forum => {
     res.statusCode = 200;
