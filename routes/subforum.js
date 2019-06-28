@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const Subforums = require("../models/subforum");
+const Forums = require("../models/forum");
 // const authenticate = require("../authenticate");
 const cors = require("./cors");
 
@@ -32,20 +33,28 @@ subforumRouter
   })
   .put(cors.cors,
     (req, res, next) => {
-      Subforums.create({
-        name: req.body.name,
-        description: req.body.description,
-				forumId: req.body.forumId,
-        path: String(req.body.name).replace(/ /g,'').toLowerCase(),
-      })
-      .then(subforum => {
-        console.log("Subforum created: ", subforum.name);
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(subforum);
-      },
-      err => {
-        next(err);
+      Forums.findById(req.body.forumId)
+      .then((forum) => {
+        if (forum == null){
+          let err = new Error("Forum does not exist");
+          return next(err);
+        } else {
+          Subforums.create({
+            name: req.body.name,
+            description: req.body.description,
+            forumId: req.body.forumId,
+            path: String(req.body.name).replace(/ /g,'').toLowerCase(),
+          })
+          .then(subforum => {
+            console.log("Subforum created: ", subforum.name);
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json(subforum);
+          },
+          err => {
+            next(err);
+          })
+        }
       })
       .catch(err => {
         next(err);
