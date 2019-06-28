@@ -32,6 +32,6 @@ forumSchema.set('toJSON', {
   virtuals: true
 });
 
-let Forums = mongoose.model("Bike", forumSchema);
+let Forums = mongoose.model("Forum", forumSchema);
 
 module.exports = Forums;
