@@ -17,7 +17,7 @@ const threadSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subforum",
   },
-  latestreply: {
+  latestReply: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Reply",
   },
