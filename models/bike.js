@@ -28,7 +28,10 @@ const bikeSchema = new Schema({
     updatedAt: "lastModifiedTime"
   }
 })
-
+// add a virtual id field 
+bikeSchema.set('toJSON', {
+  virtuals: true
+});
 let Bikes = mongoose.model("Bike", bikeSchema);
 
 module.exports = Bikes;

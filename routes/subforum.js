@@ -18,7 +18,7 @@ subforumRouter
     Subforums.find({
       forumId: fid
     })
-    // .populate("latestThread")
+    .populate("latestThread")
     .then(subforums => {
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");

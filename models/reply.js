@@ -20,6 +20,10 @@ const replySchema = new Schema({
   }
 });
 
+// add a virtual id field 
+replySchema.set('toJSON', {
+  virtuals: true
+});
 
 let Replies = mongoose.model("Reply", replySchema);
 

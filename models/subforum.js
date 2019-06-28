@@ -29,6 +29,11 @@ const subforumSchema = new Schema({
   }
 });
 
+// add a virtual id field 
+subforumSchema.set('toJSON', {
+  virtuals: true
+});
+
 let Subforums = mongoose.model("Subforum", subforumSchema);
 
 module.exports = Subforums;

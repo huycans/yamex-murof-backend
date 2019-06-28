@@ -31,7 +31,10 @@ const threadSchema = new Schema({
     updatedAt: "lastModifiedTime"
   }
 });
-
+// add a virtual id field 
+threadSchema.set('toJSON', {
+  virtuals: true
+});
 
 let Threads = mongoose.model("Thread", threadSchema);
 

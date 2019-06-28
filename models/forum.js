@@ -27,6 +27,10 @@ const forumSchema = new Schema({
   }
 });
 
+// add a virtual id field 
+forumSchema.set('toJSON', {
+  virtuals: true
+});
 
 let Forums = mongoose.model("Bike", forumSchema);
 

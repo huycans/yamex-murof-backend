@@ -31,7 +31,10 @@ const userSchema = new Schema({
     updatedAt: "lastModifiedTime"
   }
 });
-
+// add a virtual id field 
+userSchema.set('toJSON', {
+  virtuals: true
+});
 let Users = mongoose.model("User", userSchema);
 
 module.exports = Users;
