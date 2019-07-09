@@ -21,6 +21,7 @@ threadRouter
     })
     .populate("latestReply")
     .populate("firstReply")
+    .populate("user")
     .then(
       threads => {
         res.statusCode = 200;
@@ -55,7 +56,7 @@ threadRouter
                 }).then(reply => {
                     // update firstReply and latestReply in thread
                     Threads.findByIdAndUpdate(thread._id, 
-                      { $set: { firstReply: thread._id, latestReply: thread._id} },
+                      { $set: { firstReply: reply._id, latestReply: reply._id} },
                       { new: true }
                     )
                     .then((thread) => {
