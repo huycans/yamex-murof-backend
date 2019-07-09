@@ -19,9 +19,12 @@ threadRouter
     Threads.find({
       subForumId: sfid
     })
-    .populate("latestReply")
-    .populate("firstReply")
-    .populate("user")
+    .populate("author")
+    //2 level nested population: first, mongoose populate latestReply, then mongoose populate latestReply.author
+    .populate({path: "latestReply", populate: {path: "author"}})
+    // .populate("latestReply.author")
+    .populate({path: "firstReply", populate: {path: "author"}})
+    // .populate("firstReply.author")
     .then(
       threads => {
         res.statusCode = 200;
@@ -135,8 +138,12 @@ threadRouter
   })
   .get(cors.cors, (req, res, next) => {
     Threads.findById(req.params.threadId)
-      .populate("latestReply")
-      .populate("firstReply")
+      .populate("author")
+      //2 level nested population: first, mongoose populate latestReply, then mongoose populate latestReply.author
+      .populate({path: "latestReply", populate: {path: "author"}})
+      // .populate("latestReply.author")
+      .populate({path: "firstReply", populate: {path: "author"}})
+      // .populate("firstReply.author")
       .then(
         thread => {
           res.statusCode = 200;
