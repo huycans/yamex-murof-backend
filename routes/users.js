@@ -7,19 +7,19 @@ var authenticate = require("../authenticate");
 const userRouter = express.Router();
 
 userRouter.use(bodyParser.json());
-
-userRouter.post("/signup", cors.corsWithOptions, (req, res, next) => {
+  
+userRouter.post("/signup", cors.cors, (req, res, next) => {
   Users.register(new Users({ username: req.body.username }), req.body.password, (err, user) => {
     if (err) {
       res.statusCode = 500;
       res.setHeader("Content-Type", "application/json");
       res.json({ err: err });
     } else {
-      if (req.body.firstname) {
-        user.firstname = req.body.firstname;
+      if (req.body.email) {
+        user.email = req.body.email;
       }
-      if (req.body.lastname) {
-        user.firstname = req.body.lastname;
+      if (req.body.favoriteBike) {
+        user.favoriteBike = req.body.favoriteBike;
       }
       user.save((err, user) => {
         if (err) {
@@ -28,38 +28,72 @@ userRouter.post("/signup", cors.corsWithOptions, (req, res, next) => {
           res.json({ err: err });
           return;
         }
+        var token = authenticate.getToken({ _id: user._id });
+        console.log("token:", token);
+        if (user.salt) user.salt = undefined;
+        if (user.hash) user.hash = undefined;
         passport.authenticate("local")(req, res, () => {
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
-          res.json({ success: true, status: "Registration successful" });
+          res.json({ success: true, token: token, user: user, status: "Registration successful" });
         });
       });
     }
   });
 });
 
-userRouter.post("/login", cors.corsWithOptions,  (req, res, next) => {
+userRouter.post("/login", cors.cors, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     //if user doesn't exist, it does not count as an error, this info will be parsed in the info variable
     if (err) return next(err);
-    if (!user){
+    if (!user) {
       res.statusCode = 401;
       res.setHeader("Content-Type", "application/json");
       res.json({ success: false, status: "Login unsuccessful", err: info });
+      return;
     }
-    req.logIn(user, (err) => {
+    req.logIn(user, err => {
       if (err) {
         res.statusCode = 401;
         res.setHeader("Content-Type", "application/json");
         res.json({ success: false, status: "Login unsuccessful", err: "Could not log in user" });
-      } 
+        return;
+      }
       var token = authenticate.getToken({ _id: req.user._id });
+      if (user.salt) user.salt = undefined;
+      if (user.hash) user.hash = undefined;
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.json({ success: true, token: token, status: "You are successfully login" });
-    })
-  })(req, res, next)
+      res.json({ success: true, token: token, user: user, status: "You are successfully login" });
+    });
+  })(req, res, next);
 });
+
+userRouter.get("/checkJWTToken", cors.corsWithOptions, (req, res) => {
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (err) return next(err);
+
+    if (!user) {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      return res.json({ status: "JWT invalid", success: false, err: info });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      return res.json({ status: "JWT valid", success: true, user: user });
+    }
+  })(req, res);
+});
+
+//currently there are no plans for user signout on the server side
+// userRouter.post("/signout", cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+//   if (req.session) {
+//     req.session.destroy();
+//     res.clearCookie("session-id");
+//     res.redirect("/");
+//   }
+  
+// });
 
 userRouter.get(
   "/",
@@ -89,7 +123,8 @@ userRouter
   .options(cors.corsWithOptions, (req, res) => {
     res.sendStatus(200);
   })
-  .get(cors.cors, authenticate.verifyUser, function(req, res, next) {
+  // get info about a user
+  .get(cors.corsWithOptions, function(req, res, next) {
     Users.findById(req.params.userId)
       .then(
         user => {
@@ -103,7 +138,8 @@ userRouter
         next(err);
       });
   })
-  .post(cors.cors, function(req, res, next) {
+  //update info about a user
+  .post(cors.corsWithOptions, function(req, res, next) {
     Users.findByIdAndUpdate(req.query.userId, req.body, { new: true })
       .then(
         user => {
@@ -117,6 +153,5 @@ userRouter
         next(err);
       });
   });
-
 
 module.exports = userRouter;
