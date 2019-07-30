@@ -12,7 +12,8 @@ const replySchema = new Schema({
   threadId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Thread",
-  }
+  },
+  thankedList: [{type: String}]
 }, {
   timestamps: {
     createdAt: "createdTime",

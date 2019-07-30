@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Replies = require("../models/reply");
 const Threads = require("../models/thread");
-// const authenticate = require("../authenticate");
+const authenticate = require("../authenticate");
 const cors = require("./cors");
 
 const replyRouter = express.Router();
@@ -14,7 +14,7 @@ replyRouter
   .options(cors.corsWithOptions, (req, res) => {
     res.sendStatus(200);
   })
-  .get(cors.cors,(req, res, next) => {
+  .get(cors.corsWithOptions,(req, res, next) => {
     let {thrid, page} = req.query;
     Replies.find({threadId: thrid})
     .then(replies => {
@@ -28,14 +28,14 @@ replyRouter
       next(err);
     })
   })
-  .post(cors.cors,
-    (req, res, next) => {
-      // TODO: implement this
-      console.log("Register a thank you");
-      res.end("Register a thank you")
-    }
-  )
-  .put(cors.cors,
+  // .post(cors.cors,
+  //   (req, res, next) => {
+  //     // TODO: implement this
+  //     console.log("Register a thank you");
+  //     res.end("Register a thank you")
+  //   }
+  // )
+  .post(cors.corsWithOptions, authenticate.verifyUser,
     (req, res, next) => {
       Threads.findById(req.body.threadId)
       .then((thread) => {

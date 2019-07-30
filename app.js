@@ -5,6 +5,7 @@ var logger = require('morgan');
 var mongoose = require("mongoose");
 var config = require("./config")
 var passport = require("passport");
+var createError = require("http-errors");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -12,7 +13,7 @@ var authRouter = require("./routes/auth");
 var forumRouter = require("./routes/forum");
 var subforumRouter = require("./routes/subforum");
 var threadRouter = require("./routes/thread");
-
+var replyRouter = require("./routes/reply");
 
 var app = express();
 app.set('view engine', 'jade');
@@ -31,6 +32,7 @@ app.use("/user", usersRouter);
 app.use("/forum", forumRouter);
 app.use("/thread", threadRouter);
 app.use("/subforum", subforumRouter);
+app.use("/reply", replyRouter);
 
 //connect to database
 const url = config.mongoUrl;
