@@ -95,6 +95,7 @@ userRouter.get("/checkJWTToken", cors.corsWithOptions, (req, res) => {
   
 // });
 
+//return all users
 userRouter.get(
   "/",
   cors.corsWithOptions,

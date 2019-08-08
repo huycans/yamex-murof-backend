@@ -15,27 +15,32 @@ threadRouter
     res.sendStatus(200);
   })
   .get(cors.cors, (req, res, next) => {
-    let { sfid, page } = req.query;
+    let { sfid } = req.query;
+    let perPage = 5;
+    let page = Number(req.query.page) || 1;
     Threads.find({
       subForumId: sfid
     })
-    .populate("author")
-    //2 level nested population: first, mongoose populate latestReply, then mongoose populate latestReply.author
-    .populate({path: "latestReply", populate: {path: "author"}})
-    // .populate("latestReply.author")
-    .populate({path: "firstReply", populate: {path: "author"}})
-    // .populate("firstReply.author")
-    .then(
-      threads => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(threads);
-      },
-      err => next(err)
-    )
-    .catch(err => {
-      next(err);
-    });
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .populate("author")
+      //2 level nested population: first, mongoose populate latestReply, then mongoose populate latestReply.author
+      .populate({ path: "latestReply", populate: { path: "author" } })
+      // .populate("latestReply.author")
+      .populate({ path: "firstReply", populate: { path: "author" } })
+      // .populate("firstReply.author")
+      .exec(function (err, threads) {
+        Threads.countDocuments().exec(function (err, count) {
+          if (err != null) return next(err);
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json({
+            threads: threads,
+            current: page,
+            pages: Math.ceil(count / perPage)
+          });
+        });
+      })
   })
   .put(cors.cors, (req, res, next) => {
     Subforums.findById(req.body.subForumId)
@@ -51,45 +56,45 @@ threadRouter
             tag: null
           })
             .then(thread => {
-                // create first reply in a thread, which copies the content of the thread
-                Replies.create({
-                  content: thread.name,
-                  author: thread.author,
-                  threadId: thread._id
-                }).then(reply => {
-                    // update firstReply and latestReply in thread
-                    Threads.findByIdAndUpdate(thread._id, 
-                      { $set: { firstReply: reply._id, latestReply: reply._id} },
-                      { new: true }
-                    )
-                    .then((thread) => {
-                      console.log("Thread created: ", thread.name);
-                      res.statusCode = 200;
-                      res.setHeader("Content-Type", "application/json");
-                      res.json(thread);
+              // create first reply in a thread, which copies the content of the thread
+              Replies.create({
+                content: thread.name,
+                author: thread.author,
+                threadId: thread._id
+              }).then(reply => {
+                // update firstReply and latestReply in thread
+                Threads.findByIdAndUpdate(thread._id,
+                  { $set: { firstReply: reply._id, latestReply: reply._id } },
+                  { new: true }
+                )
+                  .then((thread) => {
+                    console.log("Thread created: ", thread.name);
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json(thread);
 
-                      Subforums.findByIdAndUpdate(
-                        req.body.subForumId,
-                        { $set: { latestThread: thread._id } },
-                        { new: true }
-                      ).then(
-                        subforum => {
-                          console.log("Subforum updated: latestThread");
-                        },
-                        err => {
-                          next(err);
-                        }
-                      );
-                    },
+                    Subforums.findByIdAndUpdate(
+                      req.body.subForumId,
+                      { $set: { latestThread: thread._id } },
+                      { new: true }
+                    ).then(
+                      subforum => {
+                        console.log("Subforum updated: latestThread");
+                      },
+                      err => {
+                        next(err);
+                      }
+                    );
+                  },
                     err => {
                       next(err);
                     })
-                  },
-                  err => {
-                    next(err);
-                  }
-                );
               },
+                err => {
+                  next(err);
+                }
+              );
+            },
               err => {
                 next(err);
               }
@@ -140,9 +145,9 @@ threadRouter
     Threads.findById(req.params.threadId)
       .populate("author")
       //2 level nested population: first, mongoose populate latestReply, then mongoose populate latestReply.author
-      .populate({path: "latestReply", populate: {path: "author"}})
+      .populate({ path: "latestReply", populate: { path: "author" } })
       // .populate("latestReply.author")
-      .populate({path: "firstReply", populate: {path: "author"}})
+      .populate({ path: "firstReply", populate: { path: "author" } })
       // .populate("firstReply.author")
       .then(
         thread => {

@@ -6,6 +6,8 @@ var mongoose = require("mongoose");
 var config = require("./config")
 var passport = require("passport");
 var createError = require("http-errors");
+const csp = require('express-csp-header');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -45,6 +47,13 @@ connect.then(
     console.log(error);
   }
 );
+
+app.use(csp({
+  policies: {
+      'default-src': [csp.NONE],
+      'img-src': [csp.SELF],
+  }
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
