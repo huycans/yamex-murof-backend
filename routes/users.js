@@ -7,7 +7,7 @@ var authenticate = require("../authenticate");
 const userRouter = express.Router();
 
 userRouter.use(bodyParser.json());
-  
+
 userRouter.post("/signup", cors.cors, (req, res, next) => {
   Users.register(new Users({ username: req.body.username }), req.body.password, (err, user) => {
     if (err) {
@@ -52,6 +52,7 @@ userRouter.post("/login", cors.cors, (req, res, next) => {
       res.json({ success: false, status: "Login unsuccessful", err: info });
       return;
     }
+    // TODO: update last login date directly here
     req.logIn(user, err => {
       if (err) {
         res.statusCode = 401;
@@ -92,7 +93,7 @@ userRouter.get("/checkJWTToken", cors.corsWithOptions, (req, res) => {
 //     res.clearCookie("session-id");
 //     res.redirect("/");
 //   }
-  
+
 // });
 
 //return all users
@@ -101,7 +102,7 @@ userRouter.get(
   cors.corsWithOptions,
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  function(req, res, next) {
+  function (req, res, next) {
     Users.find()
       .then(
         users => {
@@ -125,7 +126,7 @@ userRouter
     res.sendStatus(200);
   })
   // get info about a user
-  .get(cors.corsWithOptions, function(req, res, next) {
+  .get(cors.corsWithOptions, function (req, res, next) {
     Users.findById(req.params.userId)
       .then(
         user => {
@@ -140,7 +141,7 @@ userRouter
       });
   })
   //update info about a user
-  .post(cors.corsWithOptions, function(req, res, next) {
+  .post(cors.corsWithOptions, function (req, res, next) {
     Users.findByIdAndUpdate(req.query.userId, req.body, { new: true })
       .then(
         user => {

@@ -26,17 +26,30 @@ const userSchema = new Schema({
   isActive: {
     type: Boolean
   },
-}, {
-  timestamps: {
-    createdAt: "createdTime",
-    updatedAt: "lastModifiedTime"
+  lastLogin: {
+    type: Date
   }
-});
+}, {
+    timestamps: {
+      createdAt: "createdTime",
+      updatedAt: "lastModifiedTime"
+    }
+  });
+
+//   //setting the default value of lastLogin to createdAt
+// userSchema.pre("save", function (next) {
+//   this.lastLogin = this.createdAt;
+//   next();
+// })
+
 // add a virtual id field 
 userSchema.set('toJSON', {
   virtuals: true
 });
 userSchema.plugin(passportLocalMongoose);
+userSchema.statics.login = function login(id, callback) {
+  return this.findByIdAndUpdate(id, { $set: { 'lastLogin': Date.now() } }, { new: true }, callback);
+};
 
 let Users = mongoose.model("User", userSchema);
 
