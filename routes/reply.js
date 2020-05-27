@@ -16,14 +16,16 @@ replyRouter
   .get(cors.corsWithOptions, (req, res, next) => {
     // https://evdokimovm.github.io/javascript/nodejs/mongodb/pagination/expressjs/ejs/bootstrap/2017/08/20/create-pagination-with-nodejs-mongodb-express-and-ejs-step-by-step-from-scratch.html
     let { thrid } = req.query;
-    let perPage = 5;
+    let perPage = 10;
     let page = Number(req.query.page) || 1;
 
     Replies.find({ threadId: thrid })
-      .skip(perPage * page - perPage)
+      .sort("-createdTime")
+      .skip(perPage * page - perPage)//inefficient paginate technique
       .limit(perPage)
       .exec(function(err, replies) {
-        Replies.countDocuments().exec(function(err, count) {
+        if (err != null) return next(err);
+        Replies.find({ threadId: thrid }).count().exec(function(err, count) {
           if (err != null) return next(err);
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
