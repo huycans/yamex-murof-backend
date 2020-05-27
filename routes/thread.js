@@ -21,7 +21,8 @@ threadRouter
     Threads.find({
       subForumId: sfid
     })
-      .skip(perPage * page - perPage)
+      .sort("-createdTime")
+      .skip(perPage * page - perPage)//inefficient paginate technique
       .limit(perPage)
       .populate("author")
       //2 level nested population: first, mongoose populate latestReply, then mongoose populate latestReply.author
@@ -30,17 +31,24 @@ threadRouter
       .populate({ path: "firstReply", populate: { path: "author" } })
       // .populate("firstReply.author")
       .exec(function (err, threads) {
-        Threads.countDocuments().exec(function (err, count) {
-          if (err != null) return next(err);
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json({
-            threads: threads,
-            current: page,
-            pages: Math.ceil(count / perPage)
-          });
-        });
-      })
+        if (err != null) return next(err);
+        Threads.find({
+          subForumId: sfid
+        })
+        .count(
+          function (err, count){//find again to count, maybe inefficient
+            if (err != null) return next(err);
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+              threads: threads,
+              current: page,
+              pages: Math.ceil(count / perPage)
+            });
+          }
+        )
+
+      });
   })
   .put(cors.cors, (req, res, next) => {
     Subforums.findById(req.body.subForumId)
@@ -88,7 +96,7 @@ threadRouter
                   },
                     err => {
                       next(err);
-                    })
+                    });
               },
                 err => {
                   next(err);
