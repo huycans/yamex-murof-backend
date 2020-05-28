@@ -21,6 +21,12 @@ userRouter.post("/signup", cors.cors, (req, res, next) => {
       if (req.body.favoriteBike) {
         user.favoriteBike = req.body.favoriteBike;
       }
+      //placeholder info
+      user.role = req.body.role || "user"
+      user.avatarUrl = req.body.avatarUrl || "https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+      user.isActive = true;
+      user.lastLogin = Date.now();
+
       user.save((err, user) => {
         if (err) {
           res.statusCode = 500;
@@ -60,12 +66,20 @@ userRouter.post("/login", cors.cors, (req, res, next) => {
         res.json({ success: false, status: "Login unsuccessful", err: "Could not log in user" });
         return;
       }
-      var token = authenticate.getToken({ _id: req.user._id });
-      if (user.salt) user.salt = undefined;
-      if (user.hash) user.hash = undefined;
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.json({ success: true, token: token, user: user, status: "You are successfully login" });
+      Users.findByIdAndUpdate(
+        user._id, 
+        { $set: { lastLogin:  Date.now() } },
+        { new: true }
+      )
+      .then(user => {
+        var token = authenticate.getToken({ _id: req.user._id });
+        if (user.salt) user.salt = undefined;
+        if (user.hash) user.hash = undefined;
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ success: true, token: token, user: user, status: "You are successfully login" });
+      })
+      
     });
   })(req, res, next);
 });

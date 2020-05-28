@@ -25,9 +25,6 @@ const userSchema = new Schema({
   },
   isActive: {
     type: Boolean
-  },
-  lastLogin: {
-    type: Date
   }
 }, {
     timestamps: {
@@ -47,9 +44,9 @@ userSchema.set('toJSON', {
   virtuals: true
 });
 userSchema.plugin(passportLocalMongoose);
-userSchema.statics.login = function login(id, callback) {
-  return this.findByIdAndUpdate(id, { $set: { 'lastLogin': Date.now() } }, { new: true }, callback);
-};
+// userSchema.statics.login = function login(id, callback) {
+//   return this.findByIdAndUpdate(id, { $set: { 'lastLogin': Date.now() } }, { new: true }, callback);
+// };
 
 let Users = mongoose.model("User", userSchema);
 
