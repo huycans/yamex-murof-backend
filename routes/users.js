@@ -58,7 +58,7 @@ userRouter.post("/login", cors.cors, (req, res, next) => {
       res.json({ success: false, status: "Login unsuccessful", err: info });
       return;
     }
-    // TODO: update last login date directly here
+    
     req.logIn(user, err => {
       if (err) {
         res.statusCode = 401;
@@ -82,7 +82,7 @@ userRouter.post("/login", cors.cors, (req, res, next) => {
       
     });
   })(req, res, next);
-});
+})
 
 userRouter.get("/checkJWTToken", cors.corsWithOptions, (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
@@ -100,15 +100,14 @@ userRouter.get("/checkJWTToken", cors.corsWithOptions, (req, res) => {
   })(req, res);
 });
 
-//currently there are no plans for user signout on the server side
-// userRouter.post("/signout", cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-//   if (req.session) {
-//     req.session.destroy();
-//     res.clearCookie("session-id");
-//     res.redirect("/");
-//   }
-
-// });
+//logging out this way DOESN'T work, user can still log in as usual, don't know why
+//keep this in for completeness
+userRouter.post("/logout", cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
+  req.session.destroy(function () {  
+    console.log("Log user out");
+  });
+  
+});
 
 //return all users
 userRouter.get(
