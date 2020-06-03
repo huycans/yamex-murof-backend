@@ -50,7 +50,7 @@ connect.then(
 
 app.use(csp({
   policies: {
-      'default-src': [csp.NONE],
+      'default-src': [csp.SELF],
       'img-src': [csp.SELF],
   }
 }));
