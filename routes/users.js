@@ -1,10 +1,18 @@
 var express = require("express");
 const bodyParser = require("body-parser");
+var passport = require("passport");
+var multer = require('multer');
+var cloudinary = require("../cloudinary_config");
+const path = require('path');
+
+
 const Users = require("../models/user");
 const cors = require("./cors");
-var passport = require("passport");
 var authenticate = require("../authenticate");
+var upload = require("../multer");
+
 const userRouter = express.Router();
+const AVATAR_FIELD_NAME = "avatarFile";
 
 userRouter.use(bodyParser.json());
 
@@ -154,8 +162,8 @@ userRouter
       });
   })
   //update info about a user
-  .put(cors.corsWithOptions, function (req, res, next) {
-    passport.authenticate("jwt", {session: false}, (err, user) => {
+  .put(cors.cors, upload.single(AVATAR_FIELD_NAME), function (req, res, next) {
+    passport.authenticate("jwt", { session: false }, (err, user) => {
       if (err) return next(err);
       //make sure the user doing the request is the same as the user whose info is being updated
       if (user.id != req.params.userId) {
@@ -163,18 +171,45 @@ userRouter
         err.status = 403;
         return next(err);
       }
-      Users.findByIdAndUpdate(req.params.userId, req.body, { new: true })
-        .then(
-          user => {
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.json(user);
-          },
-          err => next(err)
-        )
-        .catch(err => {
-          next(err);
+      console.log(req.file);
+      console.log(req.body);
+      const pathToFile = path.join(__dirname, "../", "/temp-img/", req.file.filename);
+      cloudinary.uploader.upload(pathToFile,
+        { public_id: "user_avatar/" + user.id },
+        function (error, result) {
+          console.log(result, error);
+          //delete the temp image
+          req.body.avatarId = result.public_id;
+          Users.findByIdAndUpdate(req.params.userId, req.body, { new: true })
+            .then(
+              user => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(user);
+              },
+              err => next(err)
+            )
+            .catch(err => {
+              next(err);
+            });
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(user);
         });
+
+      // upload.single(AVATAR_FIELD_NAME)(req, res, function (err) {
+      //   if (err instanceof multer.MulterError) {
+      //     return res.status(500).json(err);
+      //   } else if (err) {
+      //     return res.status(500).json(err);
+      //   }
+      //   return res.status(200).send(req.file);
+
+      // });
+
+
+
+
     })(req, res, next);
   });
 

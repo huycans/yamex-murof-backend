@@ -6,8 +6,7 @@ var mongoose = require("mongoose");
 var config = require("./config")
 var passport = require("passport");
 var createError = require("http-errors");
-const csp = require('express-csp-header');
-
+var csp = require('express-csp-header');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
