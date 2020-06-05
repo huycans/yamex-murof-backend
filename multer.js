@@ -7,7 +7,12 @@ var storage = multer.diskStorage({
   cb(null, 'temp-img')
 },
 filename: function (req, file, cb) {
-  cb(null, file.originalname)
+  let date = new Date();
+  let nonce = date.getTime();
+  //set this nonce for the middleware in PUT user/:userID
+  req.imgNonce = nonce.toString();
+
+  cb(null, nonce + "_" + file.originalname);
 }
 })
 

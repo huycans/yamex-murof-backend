@@ -162,7 +162,8 @@ userRouter
       });
   })
   //update info about a user
-  .put(cors.cors, upload.single(AVATAR_FIELD_NAME), function (req, res, next) {
+  .put(cors.cors, function (req, res, next) {
+    //middleware to auth user
     passport.authenticate("jwt", { session: false }, (err, user) => {
       if (err) return next(err);
       //make sure the user doing the request is the same as the user whose info is being updated
@@ -171,46 +172,54 @@ userRouter
         err.status = 403;
         return next(err);
       }
-      console.log(req.file);
-      console.log(req.body);
-      const pathToFile = path.join(__dirname, "../", "/temp-img/", req.file.filename);
-      cloudinary.uploader.upload(pathToFile,
-        { public_id: "user_avatar/" + user.id },
-        function (error, result) {
-          console.log(result, error);
-          //delete the temp image
-          req.body.avatarId = result.public_id;
-          Users.findByIdAndUpdate(req.params.userId, req.body, { new: true })
-            .then(
-              user => {
-                res.statusCode = 200;
-                res.setHeader("Content-Type", "application/json");
-                res.json(user);
-              },
-              err => next(err)
-            )
-            .catch(err => {
-              next(err);
-            });
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(user);
-        });
 
-      // upload.single(AVATAR_FIELD_NAME)(req, res, function (err) {
-      //   if (err instanceof multer.MulterError) {
-      //     return res.status(500).json(err);
-      //   } else if (err) {
-      //     return res.status(500).json(err);
-      //   }
-      //   return res.status(200).send(req.file);
-
-      // });
-
-
-
-
+      //set local var for next middleware to use
+      res.locals.userId = user.id;
+      return next();
     })(req, res, next);
-  });
+  },
+    function (req, res) {
+      //middleware to deal with image upload
+      upload.single(AVATAR_FIELD_NAME)(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+          return res.status(500).json(err);
+        } else if (err) {
+          return res.status(500).json(err);
+        }
+
+        //manually set the path to the file
+        const fileName = req.file.filename;
+        const pathToFile = path.join(__dirname, "../", "/temp-img/", fileName);
+
+        //upload image to cloudinary
+        cloudinary.uploader.upload(pathToFile,
+          { public_id: "user_avatar/" + res.locals.userId + req.imgNonce },
+          function (error, result) {
+            if (error) return next(error);
+            //TODO: delete the temp image
+
+            //set avatarUrl to the public id of the image in cloudinary
+            req.body.avatarUrl = result.public_id;
+
+            //update user info
+            Users.findByIdAndUpdate(res.locals.userId, req.body, { new: true })
+              .then(
+                user => {
+                  res.statusCode = 200;
+                  res.setHeader("Content-Type", "application/json");
+                  res.json(user);
+                  return;
+                },
+                err => next(err)
+              )
+              .catch(err =>
+                next(err)
+              );
+          });
+      });
+    }
+
+  );
+
 
 module.exports = userRouter;
