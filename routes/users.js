@@ -1,11 +1,11 @@
 var express = require("express");
-const bodyParser = require("body-parser");
+var bodyParser = require("body-parser");
 var passport = require("passport");
 var multer = require('multer');
+var path = require('path');
+var fs = require("fs");
+
 var cloudinary = require("../cloudinary_config");
-const path = require('path');
-
-
 const Users = require("../models/user");
 const cors = require("./cors");
 var authenticate = require("../authenticate");
@@ -188,16 +188,21 @@ userRouter
         }
 
         //manually set the path to the file
-        const fileName = req.file.filename;
-        const pathToFile = path.join(__dirname, "../", "/temp-img/", fileName);
+        const pathToFile = path.join(__dirname, "../", "/temp-img/", req.file.filename);
 
         //upload image to cloudinary
         cloudinary.uploader.upload(pathToFile,
           { public_id: "user_avatar/" + res.locals.userId + req.imgNonce },
           function (error, result) {
             if (error) return next(error);
-            //TODO: delete the temp image
-
+            //delete the temp image
+            fs.unlink(pathToFile, (err) => {
+              if (err) {
+                console.error(err)
+                return
+              }
+            });
+            
             //set avatarUrl to the public id of the image in cloudinary
             req.body.avatarUrl = result.public_id;
 
