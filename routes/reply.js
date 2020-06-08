@@ -23,6 +23,7 @@ replyRouter
       .sort("-createdTime")
       .skip(perPage * page - perPage)//inefficient paginate technique
       .limit(perPage)
+      .populate("author")
       .exec(function(err, replies) {
         if (err != null) return next(err);
         Replies.find({ threadId: thrid }).count().exec(function(err, count) {
