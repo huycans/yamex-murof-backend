@@ -66,7 +66,7 @@ threadRouter
             .then(thread => {
               // create first reply in a thread, which copies the content of the thread
               Replies.create({
-                content: thread.name,
+                content: req.body.threadContent,
                 author: thread.author,
                 threadId: thread._id
               }).then(reply => {
