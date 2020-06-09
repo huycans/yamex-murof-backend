@@ -23,12 +23,9 @@ userRouter.post("/signup", cors.cors, (req, res, next) => {
       res.setHeader("Content-Type", "application/json");
       res.json({ err: err });
     } else {
-      if (req.body.email) {
-        user.email = req.body.email;
-      }
-      if (req.body.favoriteBike) {
-        user.favoriteBike = req.body.favoriteBike;
-      }
+      user.email = req.body.email || "";
+      user.favoriteBike = req.body.favoriteBike || "";
+
       //placeholder info
       user.role = req.body.role || "user";
       user.avatarUrl = req.body.avatarUrl || "";
@@ -187,43 +184,60 @@ userRouter
           return res.status(500).json(err);
         }
 
-        //manually set the path to the file
-        const pathToFile = path.join(__dirname, "../", "/temp-img/", req.file.filename);
+        //if there's a image file
+        if (req.file) {
+          //manually set the path to the file
+          const pathToFile = path.join(__dirname, "../", "/temp-img/", req.file.filename);
 
-        //upload image to cloudinary
-        cloudinary.uploader.upload(pathToFile,
-          { public_id: "user_avatar/" + res.locals.userId + req.imgNonce },
-          function (error, result) {
-            if (error) return next(error);
-            //delete the temp image
-            fs.unlink(pathToFile, (err) => {
-              if (err) {
-                console.error(err)
-                return
-              }
-            });
-            
-            //set avatarUrl to the public id of the image in cloudinary
-            req.body.avatarUrl = result.public_id;
-
-            //update user info
-            Users.findByIdAndUpdate(res.locals.userId, req.body, { new: true })
-              .then(
-                user => {
-                  res.statusCode = 200;
-                  res.setHeader("Content-Type", "application/json");
-                  res.json(user);
+          //upload image to cloudinary
+          cloudinary.uploader.upload(pathToFile,
+            { public_id: "user_avatar/" + res.locals.userId + req.imgNonce },
+            function (error, result) {
+              if (error) return next(error);
+              //delete the temp image
+              fs.unlink(pathToFile, (err) => {
+                if (err) {
+                  console.error(err);
                   return;
-                },
-                err => next(err)
-              )
-              .catch(err =>
-                next(err)
-              );
-          });
+                }
+              });
+
+              //set avatarUrl to the public id of the image in cloudinary
+              req.body.avatarUrl = result.public_id;
+
+              //update user info
+              Users.findByIdAndUpdate(res.locals.userId, req.body, { new: true })
+                .then(
+                  user => {
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json(user);
+                    return;
+                  },
+                  err => next(err)
+                )
+                .catch(err =>
+                  next(err)
+                );
+            });
+        }
+        //update user info
+        Users.findByIdAndUpdate(res.locals.userId, req.body, { new: true })
+          .then(
+            user => {
+              res.statusCode = 200;
+              res.setHeader("Content-Type", "application/json");
+              res.json(user);
+              return;
+            },
+            err => next(err)
+          )
+          .catch(err =>
+            next(err)
+          );
+
       });
     }
-
   );
 
 
