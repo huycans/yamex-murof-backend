@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Replies = require("../models/reply");
 const Threads = require("../models/thread");
+const Users = require("../models/user");
 const authenticate = require("../authenticate");
 const cors = require("./cors");
 
@@ -60,7 +61,14 @@ replyRouter
           })
             .then(
               reply => {
-                console.log("Reply created: ", reply.name);
+                //update user's number of post
+                Users.findByIdAndUpdate(reply.author._id, 
+                  {
+                    $inc: {numberOfPost: 1}
+                  }
+                )
+                .exec();
+                // console.log("Reply created: ", reply.name);
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "application/json");
                 res.json(reply);

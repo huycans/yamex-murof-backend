@@ -25,6 +25,12 @@ const userSchema = new Schema({
   },
   isActive: {
     type: Boolean
+  },
+  numberOfPost: {//thread + reply
+    type: Number
+  },
+  numberOfThank: {
+    type: Number
   }
 }, {
     timestamps: {

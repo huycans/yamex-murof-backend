@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const Threads = require("../models/thread");
 const Subforums = require("../models/subforum");
 const Replies = require("../models/reply");
+const Users = require("../models/user");
 // const authenticate = require("../authenticate");
 const cors = require("./cors");
 
@@ -70,9 +71,16 @@ threadRouter
                 author: thread.author,
                 threadId: thread._id
               }).then(reply => {
+                //update user's number of post
+                Users.findByIdAndUpdate(reply.author._id, 
+                  {
+                    $inc: {numberOfPost: 1}
+                  }
+                )
+                .exec();
                 // update firstReply and latestReply in thread
                 Threads.findByIdAndUpdate(thread._id,
-                  { $set: { firstReply: reply._id, latestReply: reply._id } },
+                  { $set: { firstReply: reply._id, latestReply: reply._id }},
                   { new: true }
                 )
                   .then((thread) => {
