@@ -25,9 +25,9 @@ replyRouter
       .skip(perPage * page - perPage)//inefficient paginate technique
       .limit(perPage)
       .populate("author")
-      .exec(function(err, replies) {
+      .exec(function (err, replies) {
         if (err != null) return next(err);
-        Replies.find({ threadId: thrid }).count().exec(function(err, count) {
+        Replies.find({ threadId: thrid }).count().exec(function (err, count) {
           if (err != null) return next(err);
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
@@ -39,13 +39,6 @@ replyRouter
         });
       });
   })
-  // .post(cors.cors,
-  //   (req, res, next) => {
-  //     // TODO: implement this
-  //     console.log("Register a thank you");
-  //     res.end("Register a thank you")
-  //   }
-  // )
   .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Threads.findById(req.body.threadId)
       .then(thread => {
@@ -57,17 +50,18 @@ replyRouter
             name: req.body.name,
             author: req.body.author.id,
             threadId: req.body.threadId,
-            content: req.body.content
+            content: req.body.content,
+            numberOfThank: 0
           })
             .then(
               reply => {
                 //update user's number of post
-                Users.findByIdAndUpdate(reply.author._id, 
+                Users.findByIdAndUpdate(reply.author._id,
                   {
-                    $inc: {numberOfPost: 1}
+                    $inc: { numberOfPost: 1 }
                   }
                 )
-                .exec();
+                  .exec();
                 // console.log("Reply created: ", reply.name);
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "application/json");
@@ -95,4 +89,30 @@ replyRouter
       });
   });
 
+replyRouter
+  .route("/:replyId")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    //register a thank you to this reply
+    
+    //increment reply's numberOfThank
+    Replies.findByIdAndUpdate(req.params.replyId,
+      { $inc: { numberOfThank: 1 }, },
+      { new: true }
+    )
+      .exec(function (err, reply) {
+        if (err) return next(err);
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(reply);
+      });
+    
+    //increment user's numberOfThank
+    Users.findByIdAndUpdate(req.user.id,
+      { $inc: { numberOfThank: 1 }, }
+    )
+      .exec();
+  });
 module.exports = replyRouter;
