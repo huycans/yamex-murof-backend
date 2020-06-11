@@ -41,7 +41,7 @@ app.use("/subforum", subforumRouter);
 app.use("/reply", replyRouter);
 
 //connect to database
-const url = config.mongoUrl;
+const url = process.env.MONGODB_URI || config.mongoUrl;
 const connect = mongoose.connect(url, { useNewUrlParser: true });
 connect.then(
   db => {
