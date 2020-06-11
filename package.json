@@ -1,9 +1,9 @@
 {
   "name": "yamex-murof-backend",
-  "version": "0.0.0",
+  "version": "1.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "cloudinary": "^1.21.0",
