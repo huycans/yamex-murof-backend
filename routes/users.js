@@ -172,6 +172,7 @@ userRouter
 
       //set local var for next middleware to use
       res.locals.userId = user.id;
+      res.locals.oldAvatar = user.avatarUrl;
       return next();
     })(req, res, next);
   },
@@ -220,22 +221,28 @@ userRouter
                   next(err)
                 );
             });
-        }
-        //update user info
-        Users.findByIdAndUpdate(res.locals.userId, req.body, { new: true })
-          .then(
-            user => {
-              res.statusCode = 200;
-              res.setHeader("Content-Type", "application/json");
-              res.json(user);
-              return;
-            },
-            err => next(err)
-          )
-          .catch(err =>
-            next(err)
-          );
 
+          //delete old avatar
+          cloudinary.uploader.destroy(res.locals.oldAvatar, function (error, result) {
+            if (error) return next(error);
+          })
+        }
+        else {
+          //update user info
+          Users.findByIdAndUpdate(res.locals.userId, req.body, { new: true })
+            .then(
+              user => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(user);
+                return;
+              },
+              err => next(err)
+            )
+            .catch(err =>
+              next(err)
+            );
+        }
       });
     }
   );
