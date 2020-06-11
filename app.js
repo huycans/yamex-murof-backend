@@ -7,6 +7,7 @@ var config = require("./config")
 var passport = require("passport");
 var createError = require("http-errors");
 var csp = require('express-csp-header');
+require('dotenv').config()
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -75,4 +76,6 @@ app.use(function(err, req, res, next) {
   res.render("error");
 });
 
+const port = process.env.PORT || 3000;
+app.listen(port);
 module.exports = app;
