@@ -41,6 +41,7 @@ app.use("/subforum", subforumRouter);
 app.use("/reply", replyRouter);
 
 //connect to database
+console.log("Connecting to db");
 const url = process.env.MONGODB_URI || config.mongoUrl;
 const connect = mongoose.connect(url, { useNewUrlParser: true });
 connect.then(
@@ -76,6 +77,5 @@ app.use(function(err, req, res, next) {
   res.render("error");
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port);
+
 module.exports = app;
