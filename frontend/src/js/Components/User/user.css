@@ -1,0 +1,79 @@
+
+/*user info*/
+
+.container {
+  width: 100%;
+  margin: 2em auto;
+}
+.user {
+  display: flex;
+  height: 10em;
+  align-items: center;
+  padding: 0 2em 0 0em;
+  margin: 0 2em 0 2em;
+  background-color: white;
+  box-shadow: 0.5em 0.5em 2em grey;
+}
+.user_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: grey;
+  padding-left: 2em;
+}
+.user_name {
+  font-size: 2em;
+  color: var(--main-orange);
+}
+.user_title {
+  font-style: italic;
+}
+
+.user_about {
+  margin: 2em 2em 0 2em;
+  padding: 4em;
+  background-color: white;
+  box-shadow: 0.5em 0.5em 2em grey;
+}
+.user_about b {
+  color: var(--main-orange);
+}
+
+/*change userinfo*/
+
+.change_info {
+  margin: 5em;
+}
+.change_info input {
+  margin: 0em 0 2em 5em;
+  height: 2em;
+  border-radius: 5em;
+  padding: 0 1em 0 1em;
+}
+.change_info label {
+  margin: 2em;
+  display: block;
+}
+.change_info #avatarUrl {
+  width: 50%;
+  height: 2em;
+}
+
+.change_info_button {
+  background-color: transparent;
+  border-radius: 5em;
+  color: var(--main-orange);
+  border-color: var(--main-orange);
+  border-style: solid;
+  padding: 0.5em 2em 0.5em 2em;
+}
+.change_info_button:hover {
+  cursor: pointer;
+
+}
+
+.userinfo-avatar {
+  max-width: 170px;
+  max-height: 160px;
+  margin-left: 2rem;
+}

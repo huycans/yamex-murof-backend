@@ -1,0 +1,68 @@
+.forum_view {
+  display: flex;
+  flex-direction: column;
+  margin: 5em;
+  padding: 5em;
+  background-color: white;
+  box-shadow: 0.2em 0.2em 0.5em rgb(163, 163, 163);
+}
+
+.minithread-header {
+  font-size: 1.8em;
+  text-decoration: underline;
+}
+
+.minithread {
+  color: #272e3a;
+  display: flex;
+  align-items: flex-end;
+}
+.minithread:hover {
+  background-color: #dddddd;
+}
+.minithread .mini-date-and-tname {
+  width: 50%;
+  display: flex;
+}
+.minithread .mini-date-and-tname a {
+  color: var(--main-orange);
+}
+.minithread .mini-date-and-tname a:hover {
+  text-decoration: none;
+}
+.minithread .mini-date-and-tname a:link,
+.minithread .mini-date-and-tname a visited {
+  text-decoration: none;
+}
+.minithread .mini-date-and-tname .mini-date{
+  font-weight: bold;
+  width: 5%;
+  color: var(--main-orange);
+  margin-right: 4rem;
+  font-size: 1.4rem;
+
+}
+.minithread .mini-date-and-tname .mini-tname{
+  color: var(--main-orange);
+  width: 65%;
+  font-size: 1.4rem;
+
+}
+.minithread .rep {
+  width: 25%;
+}
+.minithread .view {
+  width: 215%;
+}
+
+.MiniThreadView {
+  display: flex;
+  align-items: flex-end;
+  padding: 0.5em;
+}
+
+.more a {
+  color: var(--main-orange);
+  font-size: 18px;
+  font-weight: 300;
+}

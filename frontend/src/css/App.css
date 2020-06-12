@@ -1,0 +1,231 @@
+:root{
+  --main-orange: #ef7334;
+  --main-grey: rgb(202, 202, 202);
+  --site-bg-grey:#e9e9e9;
+  --thread-subf-bg-grey: #eaeaea;
+}
+
+
+html {
+  font-family: Roboto;
+  background-color: var(--site-bg-grey);
+}
+
+/*header */
+.wrap {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #272e3a;
+  color: white;
+  height: 10em;
+  box-shadow: 0.5em 0.5em 1em var(--main-grey);
+}
+
+/*body */
+
+.forum-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: center;
+  margin-top: 1em;
+}
+
+.subforumicon {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin: 1%;
+}
+
+button{
+  padding: 0.5em 1em 0.5em 1em;
+  border-radius: 2em;
+  background-color: white;
+  border: solid 1px var(--main-orange);
+  color: var(--main-orange);
+}
+button:disabled{
+  background-color: white;
+  border: solid 1px var(--main-grey);
+  color: var(--main-grey);
+}
+button:disabled:hover{
+  cursor: default;
+  box-shadow: none;
+}
+button:hover{
+  cursor: pointer;
+  border-color: grey;
+  color: grey;
+  box-shadow: 0.2em 0.2em 0.5em var(--main-grey);
+}
+/*forum */
+.tab {
+  margin: 0;
+  width: 100%;
+}
+
+/*Collapsible is the wrapper class of the forum collapse*/
+.Collapsible {
+  width: 80%;
+  margin-top: 10px;
+}
+.Collapsible__trigger {
+  display: block;
+  width: 100%;
+  padding: 1em;
+  color: white;
+  border-radius: 3em;
+  background-color: var(--main-orange);
+  text-align: left;
+  font-size: 20px;
+  font-weight: 400;
+  transition-delay: 0s;
+}
+
+.Collapsible__trigger:hover {
+  cursor: pointer;
+  background-color: #ff793b;
+  box-shadow: 0px 0px 10px #808080;
+}
+.Collapsible__trigger a {
+  text-decoration: none;
+  color: white;
+}
+.Collapsible__trigger a:hover {
+  color: grey;
+  text-decoration: underline;
+}
+
+.forum-link {
+  margin-left: 30px;
+}
+
+/*subforum */
+
+.subforum {
+  height: auto;
+  display: flex;
+  margin-left: 3%;
+  width: 100%;
+  justify-content: flex-start;
+}
+.subforum:hover {
+  background-color: var(--thread-subf-bg-grey);
+}
+
+.subforum a {
+  color: var(--main-orange);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.subforum a:hover {
+  color: var(--main-grey);
+  text-decoration: none;
+}
+
+.subforum .subforum_info {
+  width: 60%;
+}
+.subforum .no_thread_post {
+  width: 20%;
+}
+
+.subforum .first_unread_post {
+  width: 30%;
+}
+
+.subforum .subforum_info,
+.subforum .first_unread_post,
+.subforum .no_thread_post {
+  border-left: solid 0.3em var(--main-orange);
+  padding: 1em;
+  margin-bottom: 0.1em;
+  border-collapse: collapse;
+  background-color: white;
+}
+/*navigator */
+.navigator {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  align-items: center;
+  margin-bottom: 10px;
+  background-color: white;
+  box-shadow: 0em 0.5em 0.5em var(--main-grey);
+}
+
+.navigator a {
+  padding-left: 10px;
+  padding-right: 10px;
+  color: black;
+  text-decoration: underline;
+}
+.navigator a:hover {
+  color: var(--main-orange);
+}
+
+/*thread table */
+.thread_container {
+  background: var(--thread-subf-bg-grey);
+  width: 80%;
+  margin-left: 50px;
+  display: flex;
+  align-items: center;
+  height: 5em;
+}
+
+.thread_container a {
+  text-decoration: none;
+  color: var(--main-orange);
+}
+
+.thread_container .thread_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 60%;
+}
+.thread_container .thread_info .thread_name,
+.thread_creator {
+  font-size: 18px;
+  font-weight: bold;
+  padding-left: 2em;
+}
+.thread_container .latest_post {
+  width: 20%;
+  padding-left: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.thread_container .no_rep_view {
+  width: 20%;
+  text-align: right;
+  padding-right: 0.3em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.thread_info,
+.latest_post,
+.no_rep_view {
+  border: solid 1px;
+  border-color: grey;
+  height: 5em;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.logo{
+  width: 160px;
+}
+/*# sourceMappingURL=app.css.map */

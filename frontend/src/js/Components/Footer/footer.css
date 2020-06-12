@@ -1,0 +1,15 @@
+/*footer*/
+footer {
+  background-color: #272e3a;
+  margin-top: 10em;
+  width: 100%;
+  font-size: 0.9em;
+  color: white;
+}
+.footer-logo {
+  margin: 2em;
+}
+
+.describe-us{
+  text-align: center;
+}
