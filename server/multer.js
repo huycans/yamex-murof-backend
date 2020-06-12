@@ -4,7 +4,7 @@ var multer = require('multer');
 //store images in temp-img folder, file name is req.user.id + "-" + Date.now()
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-  cb(null, 'temp-img')
+  cb(null, 'server/temp-img')
 },
 filename: function (req, file, cb) {
   let date = new Date();
