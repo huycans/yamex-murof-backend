@@ -28,9 +28,9 @@ app.use(cookieParser());
 
 app.use(passport.initialize());
 
-app.use(express.static(path.resolve(__dirname, './react-ui/build')));
+app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 app.get('/', function(req, res) {
-  res.sendFile(path.resolve(__dirname, './react-ui/build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
 });
 
 
