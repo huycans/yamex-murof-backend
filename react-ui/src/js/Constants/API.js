@@ -2,7 +2,7 @@
 // const PROTOCOL = "https://";
 // const SERVER_IP = "35.196.89.114:5003";
 //const SERVER_IP = "10.80.250.235:5003";
-
+import runtimeEnv from '@mars/heroku-js-runtime-env';
 // local link
 const PROTOCOL = "http://";
 const SERVER_IP = "localhost:4000";
@@ -24,7 +24,8 @@ const SERVER_API = {
 	userTokenCheck: "/user/checkJWTToken",
 	logout: "/user/logout"
 };
+const env = runtimeEnv();
 console.log("BASE_URL", process.env.REACT_APP_BASE_URL);
-let URL = process.env.REACT_APP_BASE_URL || LOCAL_URL;
+let URL = process.env.REACT_APP_BASE_URL || env.REACT_APP_BASE_URL || LOCAL_URL;
 
 export { URL, SERVER_API };
