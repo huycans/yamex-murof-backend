@@ -1,5 +1,5 @@
 # What is yamex-murof?
-Yamex-murof (yamex for short) is a basic forum website. I made this as a hobby project. This site supports:
+Yamex-murof (yamex for short) is a simple internet forum. I made this as a hobby project. This site supports:
 -Create new users using email, password
 -Edit user info
 -Login, logout
@@ -7,7 +7,7 @@ Yamex-murof (yamex for short) is a basic forum website. I made this as a hobby p
 -Replying to a post
 
 # Yamex-murof-backend
-This repo is backend for yamex. Database is powered by MongoDB with Mongoose. DB need to be populated first (with at least 1 forum, 1 subforum, 1 thread and 1 user) before the site can work.
+This repo is the backend for yamex. Database is powered by MongoDB with Mongoose. DB need to be populated first (with at least 1 forum, 1 subforum, 1 thread and 1 user) before the site can work.
 Go here to see the fully working website: https://yamex.herokuapp.com/
 
 # How to run
